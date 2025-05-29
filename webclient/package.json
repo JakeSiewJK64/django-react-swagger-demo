@@ -4,15 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "generate-api": "openapi-generator-cli generate -i http://127.0.0.1:8000/api/v1/schema -g typescript-fetch -o src/api",
+    "generate-api": "npx openapi-typescript 'http://127.0.0.1:8000/api/v1/schema/?format=yaml' -o src/api/schema.d.ts",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.20.2",
     "@tailwindcss/vite": "^4.1.8",
+    "openapi-fetch": "^0.14.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.8"
