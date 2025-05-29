@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from drf_spectacular.utils import extend_schema
 from .models import Medicine
-from .serializers import MedicineSerializer
+from .serializers import MedicineSerializer, CreateMedicineSerializer
 
 @extend_schema(
     summary="Get all medicines",
@@ -19,7 +19,7 @@ def get_medicines(_):
 @extend_schema(
     summary="Create a new medicine",
     description="Accepts medicine details in the request body and saves a new medicine entry.",
-    request=MedicineSerializer,
+    request=CreateMedicineSerializer,  # This is correct
     responses={201: MedicineSerializer, 400: "Bad Request"},
 )
 @api_view(['POST'])

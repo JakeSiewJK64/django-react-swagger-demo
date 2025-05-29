@@ -59,6 +59,19 @@ SPECTACULAR_SETTINGS = {
     'SERVERS': [
         {'url': 'http://127.0.0.1:8000', 'description': 'Local Server'},
     ],
+    'AUTHENTICATION_WHITELIST': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'SECURITY': [{'cookieAuth': []}],
+    'COMPONENTS': {
+        'securitySchemes': {
+            'cookieAuth': {
+                'type': 'apiKey',
+                'in': 'cookie',
+                'name': 'sessionid',
+            },
+        },
+    },
 }
 
 MIDDLEWARE = [

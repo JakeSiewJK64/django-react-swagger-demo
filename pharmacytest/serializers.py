@@ -11,3 +11,8 @@ class MedicineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medicine
         fields = '__all__'  # Serialize all fields
+
+class CreateMedicineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medicine
+        fields = ['name', 'brand', 'expiry_date', 'price', 'stock_quantity']
