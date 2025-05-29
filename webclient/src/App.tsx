@@ -1,39 +1,81 @@
-import React, { useEffect } from "react";
-import { CreateMedicineApi, Medicine, MedicinesApi } from "./api";
+import React from "react";
+import createClient from "openapi-fetch";
+import { components, paths } from "./api/schema";
+import { useForm } from "react-hook-form";
 
-const medicineAPI = new MedicinesApi();
-const createMedicineAPI = new CreateMedicineApi();
+const client = createClient<paths>({
+  baseUrl: "http://localhost:8000",
+  headers: {
+    Authentication: "Token MY_AUTH_TOKEN",
+  },
+});
 
 function App() {
-  const [medicines, setMedicines] = React.useState<Medicine[]>([]);
+  const { register, handleSubmit } =
+    useForm<components["schemas"]["CreateMedicine"]>();
+  const [medicines, setMedicines] = React.useState<
+    components["schemas"]["Medicine"][]
+  >([]);
 
-  useEffect(() => {
-    medicineAPI.medicinesList().then((res) => {
-      setMedicines(res);
+  React.useEffect(() => {
+    client.GET("/api/v1/medicines").then(async (res) => {
+      setMedicines(res.data ?? []);
     });
   }, []);
 
+  function handleFormSubmit(
+    formValues: components["schemas"]["CreateMedicine"]
+  ) {
+    client.POST("/api/v1/create_medicine", { body: formValues }).then((res) => {
+      console.log(res);
+    });
+  }
+
   return (
-    <div>
-      <button
-        onClick={() => {
-          createMedicineAPI.createMedicineCreate({
-            medicine: {
-              brand: "",
-              expiryDate: new Date(),
-              medicineId: 1,
-              name: "",
-              price: "",
-              stockQuantity: 1,
-              metaData: "",
-            },
-          });
-        }}
+    <div className="m-2">
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="border p-2 rounded flex flex-row flex-wrap"
       >
-        add new medicine
-      </button>
-      <table>
-        <thead>
+        <input
+          {...register("name")}
+          className="border rounded p-1 m-1"
+          type="text"
+          placeholder="Name"
+        />
+        <input
+          {...register("brand")}
+          className="border rounded p-1 m-1"
+          type="text"
+          placeholder="Brand"
+        />
+        <input
+          {...register("price")}
+          className="border rounded p-1 m-1"
+          type="text"
+          placeholder="Price"
+        />
+        <input
+          {...register("stock_quantity")}
+          className="border rounded p-1 m-1"
+          type="number"
+          placeholder="Stock quantity"
+        />
+        <input
+          {...register("expiry_date")}
+          className="border rounded p-1 m-1"
+          type="date"
+          placeholder="Expiry date"
+        />
+        <button
+          type="submit"
+          className="border rounded p-1 hover:bg-slate-300 cursor-pointer"
+        >
+          add new medicine
+        </button>
+      </form>
+      <table className="border my-2 w-full">
+        <thead className="border">
           <tr>
             <th>Medicine Id</th>
             <th>Name</th>
@@ -45,12 +87,12 @@ function App() {
         </thead>
         <tbody>
           {medicines.map((medicine) => (
-            <tr key={medicine.medicineId}>
-              <td>{medicine.medicineId}</td>
+            <tr className="text-center" key={medicine.medicine_id}>
+              <td>{medicine.medicine_id}</td>
               <td>{medicine.name}</td>
               <td>{medicine.price}</td>
-              <td>{medicine.stockQuantity}</td>
-              <td>{medicine.expiryDate.toISOString()}</td>
+              <td>{medicine.stock_quantity}</td>
+              <td>{medicine.expiry_date}</td>
               <td>{medicine.brand}</td>
             </tr>
           ))}
