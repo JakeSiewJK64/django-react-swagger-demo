@@ -3,10 +3,14 @@ import createClient from "openapi-fetch";
 import { components, paths } from "./api/schema";
 import { useForm } from "react-hook-form";
 
+const authHeaders = new Headers();
+
+authHeaders.append("Authentication", "MY_AUTH_TOKEN");
+
 const client = createClient<paths>({
   baseUrl: "http://localhost:8000",
   headers: {
-    Authentication: "Token MY_AUTH_TOKEN",
+    ...authHeaders,
   },
 });
 
