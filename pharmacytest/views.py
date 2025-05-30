@@ -28,5 +28,19 @@ def create_medicines(request):
   Medicine.objects.create(**data)
   return Response(data, status=200)
 
+@extend_schema(
+    summary="Deletes a medicine by id",
+)
+@api_view(['DELETE'])
+def delete_medicine(_, pk: int):
+  try:
+    medicine = Medicine.objects.get(medicine_id=pk)
+  except:
+    return Response({"error": "Medicine not found"}, status=404)
+  
+  medicine.delete()
+
+  return Response("Successfully deleted medicine of id {pk}.".format(pk=pk), status=200)
+
 def home(_):
   return HttpResponse("hello, django")

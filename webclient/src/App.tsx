@@ -22,16 +22,20 @@ function App() {
   >([]);
 
   React.useEffect(() => {
+    fetchMedicines();
+  }, []);
+
+  function fetchMedicines() {
     client.GET("/api/v1/medicines").then(async (res) => {
       setMedicines(res.data ?? []);
     });
-  }, []);
+  }
 
   function handleFormSubmit(
     formValues: components["schemas"]["CreateMedicine"]
   ) {
-    client.POST("/api/v1/create_medicine", { body: formValues }).then((res) => {
-      console.log(res);
+    client.POST("/api/v1/create_medicine", { body: formValues }).then(() => {
+      fetchMedicines();
     });
   }
 
@@ -87,6 +91,7 @@ function App() {
             <th>Stock Quantity</th>
             <th>Expiry Date</th>
             <th>Brand</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -98,6 +103,25 @@ function App() {
               <td>{medicine.stock_quantity}</td>
               <td>{medicine.expiry_date}</td>
               <td>{medicine.brand}</td>
+              <td>
+                <button
+                  title={`Delete medicine id ${medicine.medicine_id}`}
+                  className="border border-red-600 p-1 rounded m-1 text-red-600 cursor-pointer"
+                  onClick={() => {
+                    client
+                      .DELETE("/api/v1/delete_medicine/{id}", {
+                        params: {
+                          path: {
+                            id: medicine.medicine_id,
+                          },
+                        },
+                      })
+                      .then(() => fetchMedicines());
+                  }}
+                >
+                  Delete medicine
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
