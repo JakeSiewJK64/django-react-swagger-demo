@@ -36,9 +36,7 @@ function App() {
           },
         },
       })
-      .then(async (res) => {
-        setMedicines(res.data ?? []);
-      });
+      .then((res) => setMedicines(res.data ?? []));
   }
 
   function handleFormSubmit(
