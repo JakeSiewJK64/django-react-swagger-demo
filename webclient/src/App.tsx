@@ -15,6 +15,7 @@ const client = createClient<paths>({
 });
 
 function App() {
+  const [search, setSearch] = React.useState("");
   const { register, handleSubmit } =
     useForm<components["schemas"]["CreateMedicine"]>();
   const [medicines, setMedicines] = React.useState<
@@ -23,12 +24,21 @@ function App() {
 
   React.useEffect(() => {
     fetchMedicines();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
 
   function fetchMedicines() {
-    client.GET("/api/v1/medicines").then(async (res) => {
-      setMedicines(res.data ?? []);
-    });
+    client
+      .GET("/api/v1/medicines", {
+        params: {
+          query: {
+            name: search,
+          },
+        },
+      })
+      .then(async (res) => {
+        setMedicines(res.data ?? []);
+      });
   }
 
   function handleFormSubmit(
@@ -82,7 +92,13 @@ function App() {
           add new medicine
         </button>
       </form>
-      <table className="border my-2 w-full">
+      <input
+        type="text"
+        className="border rounded w-full my-1 p-1"
+        placeholder="search for medicine"
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <table className="border w-full">
         <thead className="border">
           <tr>
             <th>Medicine Id</th>

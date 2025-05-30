@@ -1,18 +1,34 @@
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 from .models import Medicine
 from .serializers import MedicineSerializer, CreateMedicineSerializer
 
 @extend_schema(
     summary="Get all medicines",
-    description="Retrieves a list of all available medicines",
-    responses={200: MedicineSerializer(many=True)}
+    description="Retrieves a list of all available medicines. You can filter by name using the 'name' query parameter.",
+    responses={200: MedicineSerializer(many=True)},
+    parameters=[
+        OpenApiParameter(
+            name='name',
+            type=OpenApiTypes.STR,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description='Filter medicines by name (case-insensitive, partial match)'
+        )
+    ]
 )
 @api_view(['GET'])
-def get_medicines(_):
-  medicines = Medicine.objects.all()
+def get_medicines(request):
+  name_query = request.query_params.get('name', None)
+
+  if name_query:
+    medicines = Medicine.objects.filter(name__icontains=name_query)
+  else:
+    medicines = Medicine.objects.all()
+  
   serializer = MedicineSerializer(medicines, many=True)
   return Response(serializer.data)
 
