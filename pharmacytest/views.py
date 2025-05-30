@@ -35,7 +35,7 @@ def get_medicines(request):
 @extend_schema(
     summary="Create a new medicine",
     description="Accepts medicine details in the request body and saves a new medicine entry.",
-    request=CreateMedicineSerializer,  # This is correct
+    request=CreateMedicineSerializer,
     responses={201: MedicineSerializer, 400: "Bad Request"},
 )
 @api_view(['POST'])
