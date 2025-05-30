@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/api/v1/create_medicine": {
+    "/api/v1/medicines/create_medicine": {
         parameters: {
             query?: never;
             header?: never;
@@ -17,14 +17,14 @@ export interface paths {
          * Create a new medicine
          * @description Accepts medicine details in the request body and saves a new medicine entry.
          */
-        post: operations["create_medicine_create"];
+        post: operations["medicines_create_medicine_create"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/delete_medicine/{id}": {
+    "/api/v1/medicines/delete_medicine/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -35,13 +35,30 @@ export interface paths {
         put?: never;
         post?: never;
         /** Deletes a medicine by id */
-        delete: operations["delete_medicine_destroy"];
+        delete: operations["medicines_delete_medicine_destroy"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/medicines": {
+    "/api/v1/medicines/export_medicines_csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Exprt all medicines to csv */
+        get: operations["medicines_export_medicines_csv_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/medicines/get_medicines": {
         parameters: {
             query?: never;
             header?: never;
@@ -52,7 +69,7 @@ export interface paths {
          * Get all medicines
          * @description Retrieves a list of all available medicines. You can filter by name using the 'name' query parameter.
          */
-        get: operations["medicines_list"];
+        get: operations["medicines_get_medicines_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -125,7 +142,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    create_medicine_create: {
+    medicines_create_medicine_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -160,7 +177,7 @@ export interface operations {
             };
         };
     };
-    delete_medicine_destroy: {
+    medicines_delete_medicine_destroy: {
         parameters: {
             query?: never;
             header?: never;
@@ -180,7 +197,29 @@ export interface operations {
             };
         };
     };
-    medicines_list: {
+    medicines_export_medicines_csv_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Filter medicines by name (case-insensitive, partial match) */
+                name?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    medicines_get_medicines_list: {
         parameters: {
             query?: {
                 /** @description Filter medicines by name (case-insensitive, partial match) */

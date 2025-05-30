@@ -23,9 +23,10 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/home', views.home),
-    path('api/v1/medicines', views.get_medicines),
-    path('api/v1/create_medicine', views.create_medicines),
-    path('api/v1/delete_medicine/<int:pk>', views.delete_medicine),
+    path('api/v1/medicines/get_medicines', views.get_medicines),
+    path('api/v1/medicines/export_medicines_csv', views.export_medicines_csv),
+    path('api/v1/medicines/create_medicine', views.create_medicines),
+    path('api/v1/medicines/delete_medicine/<int:pk>', views.delete_medicine),
     # OpenAPI schema generation
     path('api/v1/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/v1/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

@@ -29,7 +29,7 @@ function App() {
 
   function fetchMedicines() {
     client
-      .GET("/api/v1/medicines", {
+      .GET("/api/v1/medicines/get_medicines", {
         params: {
           query: {
             name: search,
@@ -42,9 +42,11 @@ function App() {
   function handleFormSubmit(
     formValues: components["schemas"]["CreateMedicine"]
   ) {
-    client.POST("/api/v1/create_medicine", { body: formValues }).then(() => {
-      fetchMedicines();
-    });
+    client
+      .POST("/api/v1/medicines/create_medicine", { body: formValues })
+      .then(() => {
+        fetchMedicines();
+      });
   }
 
   return (
@@ -90,12 +92,43 @@ function App() {
           add new medicine
         </button>
       </form>
-      <input
-        type="text"
-        className="border rounded w-full my-1 p-1"
-        placeholder="search for medicine"
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <div className="flex flex-row gap-1 text-nowrap">
+        <input
+          type="text"
+          className="border rounded w-full my-1 p-1"
+          placeholder="search for medicine"
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button
+          onClick={() => {
+            client
+              .GET("/api/v1/medicines/export_medicines_csv", {
+                parseAs: "blob",
+              })
+              .then((res) => {
+                if (!res.data) {
+                  return;
+                }
+
+                const url = window.URL.createObjectURL(res.data);
+                const link = document.createElement("a");
+
+                link.href = url;
+                link.setAttribute("download", "medicine_export.csv");
+
+                document.body.appendChild(link);
+
+                link.click();
+                link.remove();
+
+                URL.revokeObjectURL(url);
+              });
+          }}
+          className="border rounded my-1 px-1"
+        >
+          Export data
+        </button>
+      </div>
       <table className="border w-full">
         <thead className="border">
           <tr>
@@ -123,7 +156,7 @@ function App() {
                   className="border border-red-600 p-1 rounded m-1 text-red-600 cursor-pointer"
                   onClick={() => {
                     client
-                      .DELETE("/api/v1/delete_medicine/{id}", {
+                      .DELETE("/api/v1/medicines/delete_medicine/{id}", {
                         params: {
                           path: {
                             id: medicine.medicine_id,
