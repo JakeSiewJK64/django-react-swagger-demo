@@ -25,6 +25,7 @@ def get_medicines(_):
 @api_view(['POST'])
 def create_medicines(request):
   data = request.data
+  Medicine.objects.create(**data)
   return Response(data, status=200)
 
 def home(_):
